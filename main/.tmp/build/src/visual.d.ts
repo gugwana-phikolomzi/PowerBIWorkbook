@@ -1,3 +1,4 @@
+import "./components/style.less";
 import powerbi from "powerbi-visuals-api";
 import IVisual = powerbi.extensibility.visual.IVisual;
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
@@ -9,7 +10,6 @@ export declare class Visual implements IVisual {
     constructor(options: VisualConstructorOptions);
     update(options: VisualUpdateOptions): void;
     private render;
-    private renderHeader;
     private renderWorkspace;
     private renderFieldWells;
     private renderWell;
@@ -20,5 +20,4 @@ export declare class Visual implements IVisual {
     private renderFieldItem;
     private createButton;
     private createElement;
-    private getStyles;
 }
