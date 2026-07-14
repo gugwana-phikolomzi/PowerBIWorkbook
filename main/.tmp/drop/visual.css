@@ -448,4 +448,36 @@
 .pivot-wireframe.narrow .pivot-fields-panel {
   min-height: 400px;
 }
+.pivot-field-checkbox-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+.pivot-fields-empty {
+  padding: 24px 12px;
+  color: #7b8798;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+.pivot-search {
+  width: calc(100% - 34px);
+  min-height: 40px;
+  margin: 0 17px 10px;
+  padding: 0 12px;
+  border: 1px solid #d6dde7;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #344155;
+  font-family: inherit;
+  font-size: 12px;
+  outline: none;
+}
+.pivot-search:focus {
+  border-color: #1769d8;
+  box-shadow: 0 0 0 2px rgba(23, 105, 216, 0.12);
+}
 

@@ -1,52 +1,56 @@
 "use strict";
 
 import "./components/style.less";
+
 import { renderHeader } from "./components/header";
+import {
+    AnalyticsField,
+    buildFieldsFromMetadata,
+    renderFieldsPanel,
+} from "./components/fieldsPanel";
 
 import powerbi from "powerbi-visuals-api";
 
-import IVisual = powerbi.extensibility.visual.IVisual;
+import IVisual =
+    powerbi.extensibility.visual.IVisual;
+
 import VisualConstructorOptions =
     powerbi.extensibility.visual.VisualConstructorOptions;
+
 import VisualUpdateOptions =
     powerbi.extensibility.visual.VisualUpdateOptions;
+
+import DataView =
+    powerbi.DataView;
 
 export class Visual implements IVisual {
     private readonly hostElement: HTMLElement;
     private readonly root: HTMLDivElement;
-    private readonly styleElement: HTMLStyleElement;
+
+    private dataView?: DataView;
+    private availableFields: AnalyticsField[] = [];
 
     constructor(options: VisualConstructorOptions) {
         this.hostElement = options.element;
 
-        /*
-         * Clear anything Power BI previously rendered inside the visual.
-         */
         this.hostElement.replaceChildren();
 
-        /*
-         * Keep the stylesheet outside the render root.
-         * This prevents render() from deleting it.
-         */
-        this.styleElement = document.createElement("style");
-
-        /*
-         * All visual content is rendered inside this root.
-         */
         this.root = document.createElement("div");
         this.root.className = "pivot-wireframe";
 
-        this.hostElement.append(
-            this.styleElement,
-            this.root
-        );
+        this.hostElement.appendChild(this.root);
 
         this.render();
     }
 
-    public update(options: VisualUpdateOptions): void {
-        this.root.style.width = `${options.viewport.width}px`;
-        this.root.style.height = `${options.viewport.height}px`;
+    public update(
+        options: VisualUpdateOptions
+    ): void {
+        this.root.style.width =
+            `${options.viewport.width}px`;
+
+        this.root.style.height =
+            `${options.viewport.height}px`;
 
         this.root.classList.toggle(
             "compact",
@@ -57,13 +61,19 @@ export class Visual implements IVisual {
             "narrow",
             options.viewport.width < 650
         );
+
+        this.dataView =
+            options.dataViews?.[0];
+
+        this.availableFields =
+            buildFieldsFromMetadata(
+                this.dataView?.metadata.columns ?? []
+            );
+
+        this.render();
     }
 
     private render(): void {
-        /*
-         * Only clear the visual content.
-         * The stylesheet remains attached to the host element.
-         */
         this.root.replaceChildren();
 
         const shell = this.createElement(
@@ -97,10 +107,32 @@ export class Visual implements IVisual {
 
         workspace.append(
             mainColumn,
-            this.renderFieldsPanel()
+            renderFieldsPanel({
+                fields: this.availableFields,
+                onFieldSelectionChange: (
+                    field,
+                    selected
+                ) => {
+                    this.handleFieldSelection(
+                        field,
+                        selected
+                    );
+                },
+            })
         );
 
         return workspace;
+    }
+
+    private handleFieldSelection(
+        field: AnalyticsField,
+        selected: boolean
+    ): void {
+        field.selected = selected;
+
+        console.log(
+            `${field.name} selected: ${selected}`
+        );
     }
 
     private renderFieldWells(): HTMLElement {
@@ -147,7 +179,10 @@ export class Visual implements IVisual {
             )
         );
 
-        card.append(instruction, wells);
+        card.append(
+            instruction,
+            wells
+        );
 
         return card;
     }
@@ -230,7 +265,10 @@ export class Visual implements IVisual {
             );
         }
 
-        well.append(header, dropZone);
+        well.append(
+            header,
+            dropZone
+        );
 
         return well;
     }
@@ -398,7 +436,7 @@ export class Visual implements IVisual {
             categoryHeader
         );
 
-        const rows = [
+        const rows: string[][] = [
             [
                 "Bikes",
                 "$12.6M",
@@ -469,14 +507,16 @@ export class Visual implements IVisual {
             "pivot-table-row grand-total"
         );
 
-        [
+        const totals = [
             "Grand Total",
             "$22.1M",
             "$25.5M",
             "$28.1M",
             "$30.1M",
             "$105.7M",
-        ].forEach((value, index) => {
+        ];
+
+        totals.forEach((value, index) => {
             totalRow.appendChild(
                 this.createElement(
                     "div",
@@ -493,246 +533,15 @@ export class Visual implements IVisual {
         return table;
     }
 
-    private renderFieldsPanel(): HTMLElement {
-        const panel = this.createElement(
-            "aside",
-            "pivot-fields-panel"
-        );
-
-        const title = this.createElement(
-            "h2",
-            "pivot-fields-title",
-            "Fields"
-        );
-
-        const search = this.createElement(
-            "div",
-            "pivot-search"
-        );
-
-        search.append(
-            this.createElement(
-                "span",
-                "pivot-search-icon",
-                "⌕"
-            ),
-            this.createElement(
-                "span",
-                "pivot-search-placeholder",
-                "Search fields"
-            )
-        );
-
-        const fieldList = this.createElement(
-            "div",
-            "pivot-field-list"
-        );
-
-        fieldList.append(
-            this.renderFieldGroup(
-                "▦",
-                "Sales",
-                [
-                    ["Calendar Year", "date", true],
-                    ["Calendar Quarter", "date", false],
-                    ["Calendar Month", "date", false],
-                ]
-            ),
-            this.renderFieldGroup(
-                "◇",
-                "Products",
-                [
-                    ["Product Category", "text", true],
-                    ["Product Subcategory", "text", false],
-                    ["Product", "text", false],
-                ]
-            ),
-            this.renderFieldGroup(
-                "Σ",
-                "Measures",
-                [
-                    ["Sales Amount", "number", true],
-                    ["Order Quantity", "number", false],
-                    ["Discount Amount", "number", false],
-                    ["Customer Count", "number", false],
-                ]
-            ),
-            this.renderFieldGroup(
-                "◎",
-                "Geography",
-                [
-                    ["Region", "geography", false],
-                    ["Country", "geography", false],
-                ]
-            )
-        );
-
-        const help = this.createElement(
-            "div",
-            "pivot-help"
-        );
-
-        help.append(
-            this.createElement(
-                "span",
-                "pivot-help-icon",
-                "ⓘ"
-            ),
-            this.createElement(
-                "span",
-                "pivot-help-text",
-                "Drag fields to Rows, Columns or Values to build your pivot table."
-            )
-        );
-
-        panel.append(
-            title,
-            search,
-            fieldList,
-            help
-        );
-
-        return panel;
-    }
-
-    private renderFieldGroup(
-        icon: string,
-        title: string,
-        fields: Array<[string, string, boolean]>
-    ): HTMLElement {
-        const group = this.createElement(
-            "section",
-            "pivot-field-group"
-        );
-
-        const header = this.createElement(
-            "div",
-            "pivot-field-group-header"
-        );
-
-        const heading = this.createElement(
-            "div",
-            "pivot-field-group-heading"
-        );
-
-        heading.append(
-            this.createElement(
-                "span",
-                "pivot-field-group-icon",
-                icon
-            ),
-            this.createElement(
-                "span",
-                "pivot-field-group-title",
-                title
-            )
-        );
-
-        header.append(
-            heading,
-            this.createElement(
-                "span",
-                "pivot-field-group-chevron",
-                "⌄"
-            )
-        );
-
-        const body = this.createElement(
-            "div",
-            "pivot-field-group-body"
-        );
-
-        fields.forEach(
-            ([name, type, selected]) => {
-                body.appendChild(
-                    this.renderFieldItem(
-                        name,
-                        type,
-                        selected
-                    )
-                );
-            }
-        );
-
-        group.append(header, body);
-
-        return group;
-    }
-
-    private renderFieldItem(
-        name: string,
-        type: string,
-        selected: boolean
-    ): HTMLElement {
-        const item = this.createElement(
-            "div",
-            "pivot-field-item"
-        );
-
-        const checkbox = this.createElement(
-            "span",
-            selected
-                ? "pivot-checkbox selected"
-                : "pivot-checkbox"
-        );
-
-        if (selected) {
-            checkbox.textContent = "✓";
-        }
-
-        let typeIcon = "ABC";
-
-        if (type === "date") {
-            typeIcon = "▣";
-        }
-
-        if (type === "number") {
-            typeIcon = "1.2";
-        }
-
-        if (type === "geography") {
-            typeIcon = "◎";
-        }
-
-        item.append(
-            checkbox,
-            this.createElement(
-                "span",
-                "pivot-field-type",
-                typeIcon
-            ),
-            this.createElement(
-                "span",
-                "pivot-field-name",
-                name
-            )
-        );
-
-        return item;
-    }
-
-    private createButton(
-        text: string,
-        title: string
-    ): HTMLButtonElement {
-        const button = this.createElement(
-            "button",
-            "pivot-header-button",
-            text
-        ) as HTMLButtonElement;
-
-        button.type = "button";
-        button.title = title;
-
-        return button;
-    }
-
-    private createElement<K extends keyof HTMLElementTagNameMap>(
+    private createElement<
+        K extends keyof HTMLElementTagNameMap
+    >(
         tagName: K,
         className = "",
         text?: string
     ): HTMLElementTagNameMap[K] {
-        const element = document.createElement(tagName);
+        const element =
+            document.createElement(tagName);
 
         if (className) {
             element.className = className;
