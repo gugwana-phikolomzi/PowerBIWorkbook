@@ -1,20 +1,17 @@
 {
     "dataRoles": [
         {
-            "displayName": "Category Data",
-            "name": "category",
-            "kind": "Grouping"
-        },
-        {
-            "displayName": "Measure Data",
-            "name": "measure",
-            "kind": "Measure"
+            "displayName": "Fields",
+            "name": "fields",
+            "kind": "GroupingOrMeasure"
         }
     ],
     "objects": {
         "dataPoint": {
+            "displayName": "Data points",
             "properties": {
                 "defaultColor": {
+                    "displayName": "Default color",
                     "type": {
                         "fill": {
                             "solid": {
@@ -24,11 +21,13 @@
                     }
                 },
                 "showAllDataPoints": {
+                    "displayName": "Show all data points",
                     "type": {
                         "bool": true
                     }
                 },
                 "fill": {
+                    "displayName": "Color",
                     "type": {
                         "fill": {
                             "solid": {
@@ -38,11 +37,13 @@
                     }
                 },
                 "fillRule": {
+                    "displayName": "Color saturation",
                     "type": {
                         "fill": {}
                     }
                 },
-                 "fontSize": {
+                "fontSize": {
+                    "displayName": "Font size",
                     "type": {
                         "formatting": {
                             "fontSize": true
@@ -54,23 +55,27 @@
     },
     "dataViewMappings": [
         {
-            "categorical": {
-                "categories": {
-                    "for": {
-                        "in": "category"
-                    },
-                    "dataReductionAlgorithm": {
-                        "top": {}
+            "conditions": [
+                {
+                    "fields": {
+                        "max": 100
                     }
-                },
-                "values": {
+                }
+            ],
+            "table": {
+                "rows": {
                     "select": [
                         {
-                            "bind": {
-                                "to": "measure"
+                            "for": {
+                                "in": "fields"
                             }
                         }
-                    ]
+                    ],
+                    "dataReductionAlgorithm": {
+                        "window": {
+                            "count": 30000
+                        }
+                    }
                 }
             }
         }
