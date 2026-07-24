@@ -6,11 +6,11 @@ export interface AnalyticsField {
     name: string;
     type: FieldDataType;
     isMeasure: boolean;
-    selected: boolean;
 }
 export interface FieldsPanelOptions {
     fields: AnalyticsField[];
-    onFieldSelectionChange?: (field: AnalyticsField, selected: boolean) => void;
+    onFieldDragStart?: (field: AnalyticsField, event: DragEvent) => void;
+    onFieldDragEnd?: (field: AnalyticsField, event: DragEvent) => void;
 }
 export declare function buildFieldsFromMetadata(columns?: DataViewMetadataColumn[]): AnalyticsField[];
 export declare function renderFieldsPanel(options: FieldsPanelOptions): HTMLElement;

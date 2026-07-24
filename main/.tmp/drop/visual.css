@@ -1,3 +1,6 @@
+/* -------------------------------------------------------------------------- */
+/* Global Visual Styling                                                      */
+/* -------------------------------------------------------------------------- */
 .pivot-wireframe,
 .pivot-wireframe * {
   box-sizing: border-box;
@@ -18,13 +21,16 @@
   width: 100%;
   height: 100%;
 }
+/* -------------------------------------------------------------------------- */
+/* Header                                                                     */
+/* -------------------------------------------------------------------------- */
 .pivot-header {
   display: flex;
   align-items: center;
   min-height: 90px;
   padding: 18px 24px;
-  background: #ffffff;
   border-bottom: 1px solid #e1e6ee;
+  background: #ffffff;
 }
 .pivot-header-left {
   display: flex;
@@ -75,6 +81,9 @@
   display: flex;
   gap: 7px;
 }
+/* -------------------------------------------------------------------------- */
+/* Workspace                                                                  */
+/* -------------------------------------------------------------------------- */
 .pivot-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 290px;
@@ -93,11 +102,14 @@
 }
 .pivot-card,
 .pivot-fields-panel {
-  background: #ffffff;
   border: 1px solid #e0e5ec;
   border-radius: 9px;
+  background: #ffffff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.025);
 }
+/* -------------------------------------------------------------------------- */
+/* Pivot Builder                                                              */
+/* -------------------------------------------------------------------------- */
 .pivot-builder {
   flex: 0 0 auto;
   padding: 16px;
@@ -149,13 +161,25 @@
 .pivot-drop-zone {
   display: flex;
   align-items: center;
-  min-height: 45px;
   min-width: 0;
+  min-height: 45px;
   padding: 5px;
   border: 1px dashed #cdd5df;
   border-radius: 7px;
   background: #fafbfc;
 }
+.pivot-drop-zone.drag-over {
+  border-color: #1769d8;
+  background: #f2f7ff;
+  box-shadow: inset 0 0 0 1px rgba(23, 105, 216, 0.08), 0 0 0 2px rgba(23, 105, 216, 0.1);
+}
+.pivot-drop-zone.drop-invalid {
+  border-color: #c83d4d;
+  background: #fff6f7;
+}
+/* -------------------------------------------------------------------------- */
+/* Pivot Field Chips                                                          */
+/* -------------------------------------------------------------------------- */
 .pivot-chip {
   display: flex;
   align-items: center;
@@ -192,11 +216,14 @@
   font-size: 12px;
   text-align: center;
 }
+/* -------------------------------------------------------------------------- */
+/* Results Area                                                               */
+/* -------------------------------------------------------------------------- */
 .pivot-results {
   display: flex;
+  flex: 1;
   flex-direction: column;
   min-height: 0;
-  flex: 1;
   overflow: hidden;
 }
 .pivot-toolbar {
@@ -226,6 +253,9 @@
   background: #edf4ff;
   color: #1769d8;
 }
+/* -------------------------------------------------------------------------- */
+/* Pivot Table                                                                */
+/* -------------------------------------------------------------------------- */
 .pivot-table-wrapper {
   min-width: 0;
   min-height: 0;
@@ -289,6 +319,9 @@
   background: #f6f8fb;
   font-weight: 700;
 }
+/* -------------------------------------------------------------------------- */
+/* Results Footer                                                             */
+/* -------------------------------------------------------------------------- */
 .pivot-footer {
   display: flex;
   align-items: center;
@@ -311,12 +344,39 @@
   min-height: 0;
   overflow: hidden;
 }
+/* -------------------------------------------------------------------------- */
+/* Fields Header                                                              */
+/* -------------------------------------------------------------------------- */
+.pivot-fields-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 17px 17px 5px;
+}
 .pivot-fields-title {
   margin: 0;
-  padding: 17px 17px 11px;
+  padding: 0;
   color: #172033;
   font-size: 16px;
   font-weight: 700;
+  line-height: 1.3;
+}
+.pivot-fields-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 25px;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid #dce4ef;
+  border-radius: 999px;
+  background: #f4f7fb;
+  color: #56657a;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 /* -------------------------------------------------------------------------- */
 /* Field Search                                                               */
@@ -333,13 +393,20 @@
   font-family: inherit;
   font-size: 12px;
   outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
 }
 .pivot-search::placeholder {
   color: #8590a1;
 }
+.pivot-search:hover {
+  border-color: #c3ccd8;
+}
 .pivot-search:focus {
   border-color: #1769d8;
   box-shadow: 0 0 0 2px rgba(23, 105, 216, 0.12);
+}
+.pivot-search::-webkit-search-cancel-button {
+  cursor: pointer;
 }
 /* -------------------------------------------------------------------------- */
 /* Field List                                                                 */
@@ -351,68 +418,87 @@
   min-height: 0;
   gap: 7px;
   padding: 4px 17px 14px;
+  overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-color: #9aa5b4 transparent;
+  scrollbar-width: thin;
+}
+.pivot-field-list::-webkit-scrollbar {
+  width: 9px;
+}
+.pivot-field-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.pivot-field-list::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #a6afbb;
+  background-clip: padding-box;
+}
+.pivot-field-list::-webkit-scrollbar-thumb:hover {
+  background: #858f9d;
+  background-clip: padding-box;
 }
 .pivot-field-item {
-  display: grid;
-  grid-template-columns: 18px 36px minmax(0, 1fr);
+  position: relative;
+  display: flex;
   align-items: center;
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
   min-height: 42px;
-  gap: 9px;
-  padding: 4px 8px;
-  border: 1px solid #edf0f4;
+  gap: 10px;
+  padding: 5px 9px;
+  border: 1px solid #e6ebf1;
   border-radius: 7px;
   background: #ffffff;
-  cursor: pointer;
-  transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+  cursor: grab;
+  user-select: none;
+  transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease, opacity 120ms ease, transform 120ms ease;
 }
 .pivot-field-item:hover {
-  border-color: #dce3ec;
+  border-color: #cfd8e4;
   background: #fafbfd;
-  box-shadow: 0 1px 3px rgba(20, 32, 51, 0.04);
+  box-shadow: 0 1px 3px rgba(20, 32, 51, 0.05);
 }
-/* -------------------------------------------------------------------------- */
-/* Checkbox                                                                   */
-/* -------------------------------------------------------------------------- */
-.pivot-field-checkbox-input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-}
-.pivot-checkbox {
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #aeb8c5;
-  border-radius: 4px;
-  background: #ffffff;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 700;
-  transition: border-color 120ms ease, background 120ms ease;
-}
-.pivot-checkbox.selected {
+.pivot-field-item:focus-visible {
   border-color: #1769d8;
-  background: #1769d8;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(23, 105, 216, 0.13);
+}
+.pivot-field-item:active {
+  cursor: grabbing;
+}
+.pivot-field-item.dragging {
+  opacity: 0.55;
+  transform: scale(0.985);
+}
+/* -------------------------------------------------------------------------- */
+/* Field Checkbox                                                             */
+/* -------------------------------------------------------------------------- */
+.pivot-field-checkbox-input,
+.pivot-checkbox {
+  display: none;
 }
 /* -------------------------------------------------------------------------- */
 /* Field Type Badge                                                           */
 /* -------------------------------------------------------------------------- */
 .pivot-field-type {
-  display: grid;
-  place-items: center;
-  width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+  width: 40px;
+  min-width: 40px;
   height: 30px;
   border-radius: 6px;
   background: #f2edff;
   color: #6842c2;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   line-height: 1;
+  letter-spacing: 0.01em;
+  user-select: none;
 }
 /*
  * Measures
@@ -449,10 +535,18 @@
   background: #f5edf8;
   color: #82459b;
 }
+/*
+ * Text
+ */
+.pivot-field-type[data-field-type="text"] {
+  background: #f2edff;
+  color: #6842c2;
+}
 /* -------------------------------------------------------------------------- */
 /* Field Name                                                                 */
 /* -------------------------------------------------------------------------- */
 .pivot-field-name {
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   color: #20293a;
@@ -463,24 +557,32 @@
   white-space: nowrap;
 }
 /* -------------------------------------------------------------------------- */
-/* Empty State                                                                */
+/* Empty Fields State                                                         */
 /* -------------------------------------------------------------------------- */
 .pivot-fields-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 110px;
   padding: 24px 12px;
+  border: 1px dashed #dce3ec;
+  border-radius: 7px;
+  background: #fafbfd;
   color: #7b8798;
   font-size: 12px;
   line-height: 1.5;
   text-align: center;
 }
 /* -------------------------------------------------------------------------- */
-/* Help                                                                       */
+/* Fields Help                                                                */
 /* -------------------------------------------------------------------------- */
 .pivot-help {
   display: flex;
   align-items: flex-start;
-  min-height: 96px;
-  gap: 12px;
-  padding: 18px 17px;
+  flex: 0 0 auto;
+  min-height: 76px;
+  gap: 10px;
+  padding: 14px 17px;
   border-top: 1px solid #d9e3f2;
   background: #f4f8ff;
 }
@@ -500,6 +602,7 @@
   font-weight: 700;
   line-height: 1;
   text-transform: lowercase;
+  user-select: none;
 }
 .pivot-help-content {
   display: flex;
@@ -519,15 +622,19 @@
   text-rendering: optimizeLegibility;
 }
 .pivot-help-text {
+  min-width: 0;
   margin: 0;
   color: #53647d;
   font-size: 11px;
   font-weight: 500;
-  line-height: 1.55;
+  line-height: 1.5;
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+/* -------------------------------------------------------------------------- */
+/* Compact Layout                                                             */
+/* -------------------------------------------------------------------------- */
 .pivot-wireframe.compact .pivot-workspace {
   grid-template-columns: minmax(0, 1fr) 240px;
   gap: 11px;
@@ -542,6 +649,36 @@
 .pivot-wireframe.compact .pivot-well:nth-child(-n + 2) {
   border-bottom: 1px solid #dfe5ed;
 }
+.pivot-wireframe.compact .pivot-fields-header {
+  padding-right: 13px;
+  padding-left: 13px;
+}
+.pivot-wireframe.compact .pivot-search {
+  width: calc(100% - 26px);
+  margin-right: 13px;
+  margin-left: 13px;
+}
+.pivot-wireframe.compact .pivot-field-list {
+  padding-right: 13px;
+  padding-left: 13px;
+}
+.pivot-wireframe.compact .pivot-field-item {
+  gap: 8px;
+  padding-right: 7px;
+  padding-left: 7px;
+}
+.pivot-wireframe.compact .pivot-field-type {
+  flex-basis: 36px;
+  width: 36px;
+  min-width: 36px;
+}
+.pivot-wireframe.compact .pivot-help {
+  padding-right: 13px;
+  padding-left: 13px;
+}
+/* -------------------------------------------------------------------------- */
+/* Narrow Layout                                                              */
+/* -------------------------------------------------------------------------- */
 .pivot-wireframe.narrow .pivot-workspace {
   display: flex;
   flex-direction: column;
@@ -563,36 +700,40 @@
 .pivot-wireframe.narrow .pivot-fields-panel {
   min-height: 400px;
 }
-.pivot-field-checkbox-input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
+/* -------------------------------------------------------------------------- */
+/* Very Small Fields Pane                                                     */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 280px) {
+  .pivot-fields-header {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  .pivot-search {
+    width: calc(100% - 24px);
+    margin-right: 12px;
+    margin-left: 12px;
+  }
+  .pivot-field-list {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  .pivot-field-item {
+    gap: 7px;
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+  .pivot-field-type {
+    flex-basis: 36px;
+    width: 36px;
+    min-width: 36px;
+  }
+  .pivot-help {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
 }
-.pivot-fields-empty {
-  padding: 24px 12px;
-  color: #7b8798;
-  font-size: 12px;
-  line-height: 1.5;
-  text-align: center;
-}
-.pivot-search {
-  width: calc(100% - 34px);
-  min-height: 40px;
-  margin: 0 17px 10px;
-  padding: 0 12px;
-  border: 1px solid #d6dde7;
-  border-radius: 7px;
-  background: #ffffff;
-  color: #344155;
-  font-family: inherit;
-  font-size: 12px;
-  outline: none;
-}
-.pivot-search:focus {
-  border-color: #1769d8;
-  box-shadow: 0 0 0 2px rgba(23, 105, 216, 0.12);
+.pivot-help {
+  padding-right: 12px;
+  padding-left: 12px;
 }
 
