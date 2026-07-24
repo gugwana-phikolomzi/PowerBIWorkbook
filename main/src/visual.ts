@@ -3,11 +3,20 @@
 import "./components/style.less";
 
 import { renderHeader } from "./components/header";
+
 import {
     AnalyticsField,
     buildFieldsFromMetadata,
     renderFieldsPanel,
 } from "./components/fieldsPanel";
+
+import {
+    createEmptyFieldWellsState,
+    DraggedWellField,
+    FieldWellId,
+    FieldWellsState,
+    renderFieldWells,
+} from "./components/fieldWells";
 
 import powerbi from "powerbi-visuals-api";
 
@@ -29,17 +38,27 @@ export class Visual implements IVisual {
 
     private dataView?: DataView;
     private availableFields: AnalyticsField[] = [];
+
     private draggedField?: AnalyticsField;
+    private draggedWellField?: DraggedWellField;
+
+    private fieldWellsState: FieldWellsState =
+        createEmptyFieldWellsState();
 
     constructor(options: VisualConstructorOptions) {
         this.hostElement = options.element;
 
         this.hostElement.replaceChildren();
 
-        this.root = document.createElement("div");
-        this.root.className = "pivot-wireframe";
+        this.root =
+            document.createElement("div");
 
-        this.hostElement.appendChild(this.root);
+        this.root.className =
+            "pivot-wireframe";
+
+        this.hostElement.appendChild(
+            this.root
+        );
 
         this.render();
     }
@@ -70,6 +89,8 @@ export class Visual implements IVisual {
             buildFieldsFromMetadata(
                 this.dataView?.metadata.columns ?? []
             );
+
+        this.removeUnavailableFieldsFromWells();
 
         this.render();
     }
@@ -102,14 +123,64 @@ export class Visual implements IVisual {
         );
 
         mainColumn.append(
-            this.renderFieldWells(),
+            renderFieldWells({
+                state: this.fieldWellsState,
+
+                getDraggedField: () =>
+                    this.draggedField,
+
+                getDraggedWellField: () =>
+                    this.draggedWellField,
+
+                onWellFieldDragStart: (
+                    draggedField
+                ) => {
+                    this.handleWellFieldDragStart(
+                        draggedField
+                    );
+                },
+
+                onWellFieldDragEnd: () => {
+                    this.handleWellFieldDragEnd();
+                },
+
+                onFieldMove: (
+                    field,
+                    targetWell,
+                    targetIndex,
+                    sourceWell,
+                    sourceIndex
+                ) => {
+                    this.handleFieldMove(
+                        field,
+                        targetWell,
+                        targetIndex,
+                        sourceWell,
+                        sourceIndex
+                    );
+                },
+
+                onFieldRemove: (
+                    field,
+                    sourceWell
+                ) => {
+                    this.handleFieldRemove(
+                        field,
+                        sourceWell
+                    );
+                },
+            }),
+
             this.renderPivotArea()
         );
 
         workspace.append(
             mainColumn,
+
             renderFieldsPanel({
-                fields: this.availableFields,
+                fields:
+                    this.getAvailableUnassignedFields(),
+
                 onFieldDragStart: (
                     field,
                     event
@@ -119,6 +190,7 @@ export class Visual implements IVisual {
                         event
                     );
                 },
+
                 onFieldDragEnd: (
                     field,
                     event
@@ -138,166 +210,202 @@ export class Visual implements IVisual {
         field: AnalyticsField,
         event: DragEvent
     ): void {
-        this.draggedField = field;
+        this.draggedWellField =
+            undefined;
 
-        event.dataTransfer?.setData(
-            "application/x-pivot-field-id",
-            field.id
-        );
+        this.draggedField =
+            field;
 
-        console.log(
-            `Started dragging ${field.name}`
-        );
+        if (event.dataTransfer) {
+            event.dataTransfer.effectAllowed =
+                "move";
+
+            event.dataTransfer.setData(
+                "application/x-pivot-field-id",
+                field.id
+            );
+
+            event.dataTransfer.setData(
+                "text/plain",
+                field.id
+            );
+        }
     }
 
     private handleFieldDragEnd(
-        field: AnalyticsField,
-        event: DragEvent
+        _field: AnalyticsField,
+        _event: DragEvent
     ): void {
-        console.log(
-            `Finished dragging ${field.name}`,
-            event.dataTransfer?.dropEffect ?? "none"
-        );
+        this.draggedField =
+            undefined;
 
-        this.draggedField = undefined;
+        this.clearDropZoneHighlights();
     }
 
-    private renderFieldWells(): HTMLElement {
-        const card = this.createElement(
-            "section",
-            "pivot-card pivot-builder"
-        );
+    private handleWellFieldDragStart(
+        draggedField: DraggedWellField
+    ): void {
+        this.draggedField =
+            undefined;
 
-        const instruction = this.createElement(
-            "div",
-            "pivot-instruction",
-            "Drag fields between areas below:"
-        );
-
-        const wells = this.createElement(
-            "div",
-            "pivot-wells"
-        );
-
-        wells.append(
-            this.renderWell(
-                "☰",
-                "Rows",
-                "Product Category",
-                "blue"
-            ),
-            this.renderWell(
-                "▥",
-                "Columns",
-                "Calendar Year",
-                "blue"
-            ),
-            this.renderWell(
-                "Σ",
-                "Values",
-                "Sales Amount (Sum)",
-                "green"
-            ),
-            this.renderWell(
-                "▽",
-                "Filters",
-                "",
-                "empty"
-            )
-        );
-
-        card.append(
-            instruction,
-            wells
-        );
-
-        return card;
+        this.draggedWellField =
+            draggedField;
     }
 
-    private renderWell(
-        icon: string,
-        title: string,
-        field: string,
-        tone: "blue" | "green" | "empty"
-    ): HTMLElement {
-        const well = this.createElement(
-            "div",
-            "pivot-well"
+    private handleWellFieldDragEnd(): void {
+        this.draggedWellField =
+            undefined;
+
+        this.clearDropZoneHighlights();
+    }
+
+    private handleFieldMove(
+        field: AnalyticsField,
+        targetWell: FieldWellId,
+        targetIndex: number,
+        _sourceWell?: FieldWellId,
+        _sourceIndex?: number
+    ): void {
+        this.removeFieldFromAllWells(
+            field.id
         );
 
-        const header = this.createElement(
-            "div",
-            "pivot-well-header"
-        );
+        const targetFields =
+            this.fieldWellsState[targetWell];
 
-        const heading = this.createElement(
-            "div",
-            "pivot-well-heading"
-        );
-
-        heading.append(
-            this.createElement(
-                "span",
-                "pivot-well-icon",
-                icon
-            ),
-            this.createElement(
-                "span",
-                "pivot-well-title",
-                title
-            )
-        );
-
-        header.append(
-            heading,
-            this.createElement(
-                "span",
-                "pivot-chevron",
-                "⌄"
-            )
-        );
-
-        const dropZone = this.createElement(
-            "div",
-            "pivot-drop-zone"
-        );
-
-        if (field) {
-            const chip = this.createElement(
-                "div",
-                `pivot-chip pivot-chip-${tone}`
+        const safeTargetIndex =
+            Math.max(
+                0,
+                Math.min(
+                    targetIndex,
+                    targetFields.length
+                )
             );
 
-            chip.append(
-                this.createElement(
-                    "span",
-                    "pivot-chip-label",
-                    field
+        targetFields.splice(
+            safeTargetIndex,
+            0,
+            field
+        );
+
+        this.draggedField =
+            undefined;
+
+        this.draggedWellField =
+            undefined;
+
+        this.render();
+    }
+
+    private handleFieldRemove(
+        field: AnalyticsField,
+        sourceWell: FieldWellId
+    ): void {
+        this.fieldWellsState[sourceWell] =
+            this.fieldWellsState[
+                sourceWell
+            ].filter(
+                (existingField) =>
+                    existingField.id !== field.id
+            );
+
+        this.draggedField =
+            undefined;
+
+        this.draggedWellField =
+            undefined;
+
+        this.render();
+    }
+
+    private removeFieldFromAllWells(
+        fieldId: string
+    ): void {
+        const wellIds: FieldWellId[] = [
+            "rows",
+            "columns",
+            "values",
+            "filters",
+        ];
+
+        wellIds.forEach((wellId) => {
+            this.fieldWellsState[wellId] =
+                this.fieldWellsState[
+                    wellId
+                ].filter(
+                    (field) =>
+                        field.id !== fieldId
+                );
+        });
+    }
+
+    private removeUnavailableFieldsFromWells(): void {
+        const availableFieldIds =
+            new Set(
+                this.availableFields.map(
+                    (field) => field.id
+                )
+            );
+
+        const wellIds: FieldWellId[] = [
+            "rows",
+            "columns",
+            "values",
+            "filters",
+        ];
+
+        wellIds.forEach((wellId) => {
+            this.fieldWellsState[wellId] =
+                this.fieldWellsState[
+                    wellId
+                ].filter(
+                    (field) =>
+                        availableFieldIds.has(
+                            field.id
+                        )
+                );
+        });
+    }
+
+    private getAvailableUnassignedFields():
+        AnalyticsField[] {
+        const assignedFieldIds =
+            new Set<string>([
+                ...this.fieldWellsState.rows.map(
+                    (field) => field.id
                 ),
-                this.createElement(
-                    "span",
-                    "pivot-chip-remove",
-                    "×"
-                )
-            );
 
-            dropZone.appendChild(chip);
-        } else {
-            dropZone.appendChild(
-                this.createElement(
-                    "span",
-                    "pivot-placeholder",
-                    "Drag fields here"
-                )
-            );
-        }
+                ...this.fieldWellsState.columns.map(
+                    (field) => field.id
+                ),
 
-        well.append(
-            header,
-            dropZone
+                ...this.fieldWellsState.values.map(
+                    (field) => field.id
+                ),
+
+                ...this.fieldWellsState.filters.map(
+                    (field) => field.id
+                ),
+            ]);
+
+        return this.availableFields.filter(
+            (field) =>
+                !assignedFieldIds.has(
+                    field.id
+                )
         );
+    }
 
-        return well;
+    private clearDropZoneHighlights(): void {
+        this.root
+            .querySelectorAll(
+                ".pivot-drop-zone.drag-over"
+            )
+            .forEach((element) => {
+                element.classList.remove(
+                    "drag-over"
+                );
+            });
     }
 
     private renderPivotArea(): HTMLElement {
@@ -322,16 +430,19 @@ export class Visual implements IVisual {
                 "pivot-view-button active",
                 "▦"
             ),
+
             this.createElement(
                 "button",
                 "pivot-view-button",
                 "☷"
             ),
+
             this.createElement(
                 "button",
                 "pivot-toolbar-button",
                 "↓"
             ),
+
             this.createElement(
                 "button",
                 "pivot-toolbar-button",
@@ -339,7 +450,9 @@ export class Visual implements IVisual {
             )
         );
 
-        toolbar.appendChild(toolbarRight);
+        toolbar.appendChild(
+            toolbarRight
+        );
 
         const tableWrapper = this.createElement(
             "div",
@@ -361,6 +474,7 @@ export class Visual implements IVisual {
                 "pivot-footer-icon",
                 "ⓘ"
             ),
+
             this.createElement(
                 "span",
                 "pivot-footer-text",
@@ -394,6 +508,7 @@ export class Visual implements IVisual {
                 "pivot-cell pivot-row-header tall",
                 "Sum of Sales Amount"
             ),
+
             this.createElement(
                 "div",
                 "pivot-cell pivot-column-header wide",
@@ -412,26 +527,31 @@ export class Visual implements IVisual {
                 "pivot-cell pivot-row-header",
                 ""
             ),
+
             this.createElement(
                 "div",
                 "pivot-cell",
                 "2021"
             ),
+
             this.createElement(
                 "div",
                 "pivot-cell",
                 "2022"
             ),
+
             this.createElement(
                 "div",
                 "pivot-cell",
                 "2023"
             ),
+
             this.createElement(
                 "div",
                 "pivot-cell",
                 "2024"
             ),
+
             this.createElement(
                 "div",
                 "pivot-cell total-cell",
@@ -439,10 +559,11 @@ export class Visual implements IVisual {
             )
         );
 
-        const categoryHeader = this.createElement(
-            "div",
-            "pivot-table-row pivot-category-header"
-        );
+        const categoryHeader =
+            this.createElement(
+                "div",
+                "pivot-table-row pivot-category-header"
+            );
 
         categoryHeader.append(
             this.createElement(
@@ -450,6 +571,7 @@ export class Visual implements IVisual {
                 "pivot-cell pivot-row-header",
                 "Product Category"
             ),
+
             this.createElement(
                 "div",
                 "pivot-cell pivot-empty-span",
@@ -499,34 +621,40 @@ export class Visual implements IVisual {
         ];
 
         rows.forEach((row) => {
-            const rowElement = this.createElement(
-                "div",
-                "pivot-table-row"
+            const rowElement =
+                this.createElement(
+                    "div",
+                    "pivot-table-row"
+                );
+
+            row.forEach(
+                (value, index) => {
+                    const className =
+                        index === 0
+                            ? "pivot-cell pivot-row-header"
+                            : index ===
+                                row.length - 1
+                              ? "pivot-cell numeric total-cell"
+                              : "pivot-cell numeric";
+
+                    const text =
+                        index === 0
+                            ? `›  ${value}`
+                            : value;
+
+                    rowElement.appendChild(
+                        this.createElement(
+                            "div",
+                            className,
+                            text
+                        )
+                    );
+                }
             );
 
-            row.forEach((value, index) => {
-                const className =
-                    index === 0
-                        ? "pivot-cell pivot-row-header"
-                        : index === row.length - 1
-                            ? "pivot-cell numeric total-cell"
-                            : "pivot-cell numeric";
-
-                const text =
-                    index === 0
-                        ? `›  ${value}`
-                        : value;
-
-                rowElement.appendChild(
-                    this.createElement(
-                        "div",
-                        className,
-                        text
-                    )
-                );
-            });
-
-            table.appendChild(rowElement);
+            table.appendChild(
+                rowElement
+            );
         });
 
         const totalRow = this.createElement(
@@ -543,19 +671,23 @@ export class Visual implements IVisual {
             "$105.7M",
         ];
 
-        totals.forEach((value, index) => {
-            totalRow.appendChild(
-                this.createElement(
-                    "div",
-                    index === 0
-                        ? "pivot-cell pivot-row-header"
-                        : "pivot-cell numeric",
-                    value
-                )
-            );
-        });
+        totals.forEach(
+            (value, index) => {
+                totalRow.appendChild(
+                    this.createElement(
+                        "div",
+                        index === 0
+                            ? "pivot-cell pivot-row-header"
+                            : "pivot-cell numeric",
+                        value
+                    )
+                );
+            }
+        );
 
-        table.appendChild(totalRow);
+        table.appendChild(
+            totalRow
+        );
 
         return table;
     }
@@ -568,14 +700,18 @@ export class Visual implements IVisual {
         text?: string
     ): HTMLElementTagNameMap[K] {
         const element =
-            document.createElement(tagName);
+            document.createElement(
+                tagName
+            );
 
         if (className) {
-            element.className = className;
+            element.className =
+                className;
         }
 
         if (text !== undefined) {
-            element.textContent = text;
+            element.textContent =
+                text;
         }
 
         return element;
