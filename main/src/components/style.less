@@ -1,362 +1,412 @@
+/* -------------------------------------------------------------------------- */
+/* Global Visual Styling                                                      */
+/* -------------------------------------------------------------------------- */
 
-            .pivot-wireframe,
-            .pivot-wireframe * {
-                box-sizing: border-box;
-            }
+.pivot-wireframe,
+.pivot-wireframe * {
+    box-sizing: border-box;
+}
 
-            .pivot-wireframe {
-                width: 100%;
-                height: 100%;
-                min-width: 0;
-                overflow: hidden;
-                background: #f5f7fa;
-                color: #142033;
-                font-family:
-                    "Segoe UI",
-                    Arial,
-                    sans-serif;
-                font-size: 14px;
-            }
+.pivot-wireframe {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    overflow: hidden;
+    background: #f5f7fa;
+    color: #142033;
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+    font-size: 14px;
+}
 
-            .pivot-shell {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                height: 100%;
-            }
+.pivot-shell {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
 
-            .pivot-header {
-                display: flex;
-                align-items: center;
-                min-height: 90px;
-                padding: 18px 24px;
-                background: #ffffff;
-                border-bottom: 1px solid #e1e6ee;
-            }
 
-            .pivot-header-left {
-                display: flex;
-                align-items: center;
-                min-width: 0;
-                gap: 14px;
-            }
+/* -------------------------------------------------------------------------- */
+/* Header                                                                     */
+/* -------------------------------------------------------------------------- */
 
-            .pivot-logo {
-                display: grid;
-                place-items: center;
-                width: 42px;
-                height: 42px;
-                flex: 0 0 42px;
-                border: 1px solid #cfd8e6;
-                border-radius: 8px;
-                background: #f6f8fb;
-                color: #47576d;
-                font-size: 24px;
-            }
+.pivot-header {
+    display: flex;
+    align-items: center;
+    min-height: 90px;
+    padding: 18px 24px;
+    border-bottom: 1px solid #e1e6ee;
+    background: #ffffff;
+}
 
-            .pivot-header-copy {
-                min-width: 0;
-            }
+.pivot-header-left {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 14px;
+}
 
-            .pivot-title-line {
-                display: flex;
-                align-items: center;
-                gap: 9px;
-            }
+.pivot-logo {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    border: 1px solid #cfd8e6;
+    border-radius: 8px;
+    background: #f6f8fb;
+    color: #47576d;
+    font-size: 24px;
+}
 
-            .pivot-title {
-                margin: 0;
-                font-size: 21px;
-                font-weight: 700;
-                line-height: 1.2;
-            }
+.pivot-header-copy {
+    min-width: 0;
+}
 
-            .pivot-badge {
-                padding: 4px 9px;
-                border-radius: 12px;
-                background: #edf1f7;
-                color: #506078;
-                font-size: 11px;
-                font-weight: 600;
-            }
+.pivot-title-line {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
 
-            .pivot-subtitle {
-                margin: 5px 0 0;
-                color: #6d7888;
-                font-size: 13px;
-            }
+.pivot-title {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.2;
+}
 
-            .pivot-header-actions {
-                display: flex;
-                gap: 7px;
-            }
+.pivot-badge {
+    padding: 4px 9px;
+    border-radius: 12px;
+    background: #edf1f7;
+    color: #506078;
+    font-size: 11px;
+    font-weight: 600;
+}
 
-            .pivot-workspace {
-                display: grid;
-                grid-template-columns:
-                    minmax(0, 1fr)
-                    290px;
-                min-height: 0;
-                flex: 1;
-                gap: 18px;
-                padding: 18px;
-                overflow: hidden;
-            }
+.pivot-subtitle {
+    margin: 5px 0 0;
+    color: #6d7888;
+    font-size: 13px;
+}
 
-            .pivot-main {
-                display: flex;
-                flex-direction: column;
-                min-width: 0;
-                min-height: 0;
-                gap: 17px;
-            }
+.pivot-header-actions {
+    display: flex;
+    gap: 7px;
+}
 
-            .pivot-card,
-            .pivot-fields-panel {
-                background: #ffffff;
-                border: 1px solid #e0e5ec;
-                border-radius: 9px;
-                box-shadow:
-                    0 1px 2px rgba(0, 0, 0, 0.03),
-                    0 4px 12px rgba(0, 0, 0, 0.025);
-            }
 
-            .pivot-builder {
-                flex: 0 0 auto;
-                padding: 16px;
-            }
+/* -------------------------------------------------------------------------- */
+/* Workspace                                                                  */
+/* -------------------------------------------------------------------------- */
 
-            .pivot-instruction {
-                margin-bottom: 13px;
-                color: #647084;
-                font-size: 13px;
-            }
+.pivot-workspace {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        290px;
+    min-height: 0;
+    flex: 1;
+    gap: 18px;
+    padding: 18px;
+    overflow: hidden;
+}
 
-            .pivot-wells {
-                display: grid;
-                grid-template-columns:
-                    repeat(4, minmax(0, 1fr));
-                overflow: hidden;
-                border: 1px solid #dfe5ed;
-                border-radius: 8px;
-            }
+.pivot-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    gap: 17px;
+}
 
-            .pivot-well {
-                min-width: 0;
-                padding: 14px;
-                border-right: 1px solid #dfe5ed;
-            }
+.pivot-card,
+.pivot-fields-panel {
+    border: 1px solid #e0e5ec;
+    border-radius: 9px;
+    background: #ffffff;
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.03),
+        0 4px 12px rgba(0, 0, 0, 0.025);
+}
 
-            .pivot-well:last-child {
-                border-right: 0;
-            }
 
-            .pivot-well-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 12px;
-            }
+/* -------------------------------------------------------------------------- */
+/* Pivot Builder                                                              */
+/* -------------------------------------------------------------------------- */
 
-            .pivot-well-heading {
-                display: flex;
-                align-items: center;
-                min-width: 0;
-                gap: 8px;
-            }
+.pivot-builder {
+    flex: 0 0 auto;
+    padding: 16px;
+}
 
-            .pivot-well-icon {
-                color: #667487;
-                font-size: 17px;
-            }
+.pivot-instruction {
+    margin-bottom: 13px;
+    color: #647084;
+    font-size: 13px;
+}
 
-            .pivot-well-title {
-                font-size: 13px;
-                font-weight: 600;
-            }
+.pivot-wells {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid #dfe5ed;
+    border-radius: 8px;
+}
 
-            .pivot-chevron {
-                color: #778397;
-                font-size: 14px;
-            }
+.pivot-well {
+    min-width: 0;
+    padding: 14px;
+    border-right: 1px solid #dfe5ed;
+}
 
-            .pivot-drop-zone {
-                display: flex;
-                align-items: center;
-                min-height: 45px;
-                min-width: 0;
-                padding: 5px;
-                border: 1px dashed #cdd5df;
-                border-radius: 7px;
-                background: #fafbfc;
-            }
+.pivot-well:last-child {
+    border-right: 0;
+}
 
-            .pivot-chip {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
-                min-width: 0;
-                height: 34px;
-                padding: 0 10px;
-                border-radius: 6px;
-            }
+.pivot-well-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
 
-            .pivot-chip-blue {
-                background: #eaf2ff;
-                color: #1664c8;
-            }
+.pivot-well-heading {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 8px;
+}
 
-            .pivot-chip-green {
-                background: #e8f5eb;
-                color: #267647;
-            }
+.pivot-well-icon {
+    color: #667487;
+    font-size: 17px;
+}
 
-            .pivot-chip-label {
-                min-width: 0;
-                overflow: hidden;
-                font-size: 12px;
-                font-weight: 500;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
+.pivot-well-title {
+    font-size: 13px;
+    font-weight: 600;
+}
 
-            .pivot-chip-remove {
-                margin-left: 8px;
-                font-size: 17px;
-            }
+.pivot-chevron {
+    color: #778397;
+    font-size: 14px;
+}
 
-            .pivot-placeholder {
-                width: 100%;
-                color: #8b95a5;
-                font-size: 12px;
-                text-align: center;
-            }
+.pivot-drop-zone {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    min-height: 45px;
+    padding: 5px;
+    border: 1px dashed #cdd5df;
+    border-radius: 7px;
+    background: #fafbfc;
+}
 
-            .pivot-results {
-                display: flex;
-                flex-direction: column;
-                min-height: 0;
-                flex: 1;
-                overflow: hidden;
-            }
+.pivot-drop-zone.drag-over {
+    border-color: #1769d8;
+    background: #f2f7ff;
+    box-shadow:
+        inset 0 0 0 1px rgba(23, 105, 216, 0.08),
+        0 0 0 2px rgba(23, 105, 216, 0.10);
+}
 
-            .pivot-toolbar {
-                display: flex;
-                justify-content: flex-end;
-                min-height: 54px;
-                padding: 9px 13px;
-                border-bottom: 1px solid #e0e5ec;
-            }
+.pivot-drop-zone.drop-invalid {
+    border-color: #c83d4d;
+    background: #fff6f7;
+}
 
-            .pivot-toolbar-right {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-            }
 
-            .pivot-view-button {
-                border: 1px solid #d8dee7;
-                border-radius: 0;
-            }
+/* -------------------------------------------------------------------------- */
+/* Pivot Field Chips                                                          */
+/* -------------------------------------------------------------------------- */
 
-            .pivot-view-button:first-child {
-                border-radius: 6px 0 0 6px;
-            }
+.pivot-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-width: 0;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 6px;
+}
 
-            .pivot-view-button:nth-child(2) {
-                margin-left: -7px;
-                border-radius: 0 6px 6px 0;
-            }
+.pivot-chip-blue {
+    background: #eaf2ff;
+    color: #1664c8;
+}
 
-            .pivot-view-button.active {
-                background: #edf4ff;
-                color: #1769d8;
-            }
+.pivot-chip-green {
+    background: #e8f5eb;
+    color: #267647;
+}
 
-            .pivot-table-wrapper {
-                min-width: 0;
-                min-height: 0;
-                flex: 1;
-                padding: 13px;
-                overflow: auto;
-            }
+.pivot-chip-label {
+    min-width: 0;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
-            .pivot-table {
-                min-width: 760px;
-                overflow: hidden;
-                border: 1px solid #dce2ea;
-                border-radius: 7px;
-            }
+.pivot-chip-remove {
+    margin-left: 8px;
+    font-size: 17px;
+}
 
-            .pivot-table-row {
-                display: grid;
-                grid-template-columns:
-                    210px
-                    repeat(5, minmax(110px, 1fr));
-            }
+.pivot-placeholder {
+    width: 100%;
+    color: #8b95a5;
+    font-size: 12px;
+    text-align: center;
+}
 
-            .pivot-top-header {
-                grid-template-columns:
-                    210px
-                    minmax(550px, 5fr);
-            }
 
-            .pivot-category-header {
-                grid-template-columns:
-                    210px
-                    minmax(550px, 5fr);
-            }
+/* -------------------------------------------------------------------------- */
+/* Results Area                                                               */
+/* -------------------------------------------------------------------------- */
 
-            .pivot-cell {
-                display: flex;
-                align-items: center;
-                min-height: 52px;
-                padding: 10px 13px;
-                border-right: 1px solid #e1e6ed;
-                border-bottom: 1px solid #e1e6ed;
-                background: #ffffff;
-                font-size: 12px;
-            }
+.pivot-results {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
 
-            .pivot-cell:last-child {
-                border-right: 0;
-            }
+.pivot-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 54px;
+    padding: 9px 13px;
+    border-bottom: 1px solid #e0e5ec;
+}
 
-            .pivot-table-row:last-child .pivot-cell {
-                border-bottom: 0;
-            }
+.pivot-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
 
-            .pivot-top-header .pivot-cell,
-            .pivot-year-header .pivot-cell,
-            .pivot-category-header .pivot-cell {
-                background: #fafbfd;
-                font-weight: 600;
-            }
+.pivot-view-button {
+    border: 1px solid #d8dee7;
+    border-radius: 0;
+}
 
-            .pivot-column-header {
-                justify-content: flex-start;
-            }
+.pivot-view-button:first-child {
+    border-radius: 6px 0 0 6px;
+}
 
-            .pivot-row-header {
-                font-weight: 600;
-            }
+.pivot-view-button:nth-child(2) {
+    margin-left: -7px;
+    border-radius: 0 6px 6px 0;
+}
 
-            .numeric {
-                justify-content: flex-end;
-                font-variant-numeric: tabular-nums;
-            }
+.pivot-view-button.active {
+    background: #edf4ff;
+    color: #1769d8;
+}
 
-            .total-cell {
-                background: #fafbfd;
-                font-weight: 700;
-            }
 
-            .grand-total .pivot-cell {
-                background: #f6f8fb;
-                font-weight: 700;
-            }
+/* -------------------------------------------------------------------------- */
+/* Pivot Table                                                                */
+/* -------------------------------------------------------------------------- */
 
+.pivot-table-wrapper {
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    padding: 13px;
+    overflow: auto;
+}
+
+.pivot-table {
+    min-width: 760px;
+    overflow: hidden;
+    border: 1px solid #dce2ea;
+    border-radius: 7px;
+}
+
+.pivot-table-row {
+    display: grid;
+    grid-template-columns:
+        210px
+        repeat(5, minmax(110px, 1fr));
+}
+
+.pivot-top-header {
+    grid-template-columns:
+        210px
+        minmax(550px, 5fr);
+}
+
+.pivot-category-header {
+    grid-template-columns:
+        210px
+        minmax(550px, 5fr);
+}
+
+.pivot-cell {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 10px 13px;
+    border-right: 1px solid #e1e6ed;
+    border-bottom: 1px solid #e1e6ed;
+    background: #ffffff;
+    font-size: 12px;
+}
+
+.pivot-cell:last-child {
+    border-right: 0;
+}
+
+.pivot-table-row:last-child .pivot-cell {
+    border-bottom: 0;
+}
+
+.pivot-top-header .pivot-cell,
+.pivot-year-header .pivot-cell,
+.pivot-category-header .pivot-cell {
+    background: #fafbfd;
+    font-weight: 600;
+}
+
+.pivot-column-header {
+    justify-content: flex-start;
+}
+
+.pivot-row-header {
+    font-weight: 600;
+}
+
+.numeric {
+    justify-content: flex-end;
+    font-variant-numeric: tabular-nums;
+}
+
+.total-cell {
+    background: #fafbfd;
+    font-weight: 700;
+}
+
+.grand-total .pivot-cell {
+    background: #f6f8fb;
+    font-weight: 700;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Results Footer                                                             */
+/* -------------------------------------------------------------------------- */
 
 .pivot-footer {
     display: flex;
@@ -385,12 +435,43 @@
     overflow: hidden;
 }
 
+
+/* -------------------------------------------------------------------------- */
+/* Fields Header                                                              */
+/* -------------------------------------------------------------------------- */
+
+.pivot-fields-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 17px 17px 5px;
+}
+
 .pivot-fields-title {
     margin: 0;
-    padding: 17px 17px 11px;
+    padding: 0;
     color: #172033;
     font-size: 16px;
     font-weight: 700;
+    line-height: 1.3;
+}
+
+.pivot-fields-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 25px;
+    height: 22px;
+    padding: 0 7px;
+    border: 1px solid #dce4ef;
+    border-radius: 999px;
+    background: #f4f7fb;
+    color: #56657a;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
 }
 
 
@@ -410,16 +491,27 @@
     font-family: inherit;
     font-size: 12px;
     outline: none;
+    transition:
+        border-color 120ms ease,
+        box-shadow 120ms ease;
 }
 
 .pivot-search::placeholder {
     color: #8590a1;
 }
 
+.pivot-search:hover {
+    border-color: #c3ccd8;
+}
+
 .pivot-search:focus {
     border-color: #1769d8;
     box-shadow:
         0 0 0 2px rgba(23, 105, 216, 0.12);
+}
+
+.pivot-search::-webkit-search-cancel-button {
+    cursor: pointer;
 }
 
 
@@ -434,69 +526,86 @@
     min-height: 0;
     gap: 7px;
     padding: 4px 17px 14px;
+    overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-color: #9aa5b4 transparent;
+    scrollbar-width: thin;
+}
+
+.pivot-field-list::-webkit-scrollbar {
+    width: 9px;
+}
+
+.pivot-field-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.pivot-field-list::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: #a6afbb;
+    background-clip: padding-box;
+}
+
+.pivot-field-list::-webkit-scrollbar-thumb:hover {
+    background: #858f9d;
+    background-clip: padding-box;
 }
 
 .pivot-field-item {
-    display: grid;
-    grid-template-columns:
-        18px
-        36px
-        minmax(0, 1fr);
+    position: relative;
+    display: flex;
     align-items: center;
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
     min-height: 42px;
-    gap: 9px;
-    padding: 4px 8px;
-    border: 1px solid #edf0f4;
+    gap: 10px;
+    padding: 5px 9px;
+    border: 1px solid #e6ebf1;
     border-radius: 7px;
     background: #ffffff;
-    cursor: pointer;
+    cursor: grab;
+    user-select: none;
     transition:
         background 120ms ease,
         border-color 120ms ease,
-        box-shadow 120ms ease;
+        box-shadow 120ms ease,
+        opacity 120ms ease,
+        transform 120ms ease;
 }
 
 .pivot-field-item:hover {
-    border-color: #dce3ec;
+    border-color: #cfd8e4;
     background: #fafbfd;
     box-shadow:
-        0 1px 3px rgba(20, 32, 51, 0.04);
+        0 1px 3px rgba(20, 32, 51, 0.05);
 }
 
-
-/* -------------------------------------------------------------------------- */
-/* Checkbox                                                                   */
-/* -------------------------------------------------------------------------- */
-
-.pivot-field-checkbox-input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.pivot-checkbox {
-    display: grid;
-    place-items: center;
-    width: 18px;
-    height: 18px;
-    border: 1px solid #aeb8c5;
-    border-radius: 4px;
-    background: #ffffff;
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 700;
-    transition:
-        border-color 120ms ease,
-        background 120ms ease;
-}
-
-.pivot-checkbox.selected {
+.pivot-field-item:focus-visible {
     border-color: #1769d8;
-    background: #1769d8;
+    outline: none;
+    box-shadow:
+        0 0 0 2px rgba(23, 105, 216, 0.13);
+}
+
+.pivot-field-item:active {
+    cursor: grabbing;
+}
+
+.pivot-field-item.dragging {
+    opacity: 0.55;
+    transform: scale(0.985);
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Field Checkbox                                                             */
+/* -------------------------------------------------------------------------- */
+
+.pivot-field-checkbox-input,
+.pivot-checkbox {
+    display: none;
 }
 
 
@@ -505,18 +614,22 @@
 /* -------------------------------------------------------------------------- */
 
 .pivot-field-type {
-    display: grid;
-    place-items: center;
-    width: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 40px;
+    width: 40px;
+    min-width: 40px;
     height: 30px;
     border-radius: 6px;
     background: #f2edff;
     color: #6842c2;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     line-height: 1;
+    letter-spacing: 0.01em;
+    user-select: none;
 }
-
 
 /*
  * Measures
@@ -527,7 +640,6 @@
     color: #1769d8;
 }
 
-
 /*
  * Numbers
  */
@@ -536,7 +648,6 @@
     background: #edf7f1;
     color: #287a4b;
 }
-
 
 /*
  * Dates
@@ -547,7 +658,6 @@
     color: #b76312;
 }
 
-
 /*
  * Geography
  */
@@ -556,7 +666,6 @@
     background: #eaf8f7;
     color: #14766f;
 }
-
 
 /*
  * Boolean
@@ -567,12 +676,22 @@
     color: #82459b;
 }
 
+/*
+ * Text
+ */
+
+.pivot-field-type[data-field-type="text"] {
+    background: #f2edff;
+    color: #6842c2;
+}
+
 
 /* -------------------------------------------------------------------------- */
 /* Field Name                                                                 */
 /* -------------------------------------------------------------------------- */
 
 .pivot-field-name {
+    flex: 1 1 auto;
     min-width: 0;
     overflow: hidden;
     color: #20293a;
@@ -584,12 +703,20 @@
 }
 
 
+
 /* -------------------------------------------------------------------------- */
-/* Empty State                                                                */
+/* Empty Fields State                                                         */
 /* -------------------------------------------------------------------------- */
 
 .pivot-fields-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 110px;
     padding: 24px 12px;
+    border: 1px dashed #dce3ec;
+    border-radius: 7px;
+    background: #fafbfd;
     color: #7b8798;
     font-size: 12px;
     line-height: 1.5;
@@ -598,21 +725,19 @@
 
 
 /* -------------------------------------------------------------------------- */
-/* Help                                                                       */
+/* Fields Help                                                                */
 /* -------------------------------------------------------------------------- */
 
 .pivot-help {
     display: flex;
     align-items: flex-start;
-    min-height: 96px;
-    gap: 12px;
-    padding: 18px 17px;
+    flex: 0 0 auto;
+    min-height: 76px;
+    gap: 10px;
+    padding: 14px 17px;
     border-top: 1px solid #d9e3f2;
     background: #f4f8ff;
 }
-
-
-
 
 .pivot-help-icon {
     display: grid;
@@ -624,12 +749,15 @@
     border-radius: 50%;
     background: #eaf2ff;
     color: #1769d8;
-    font-family: Arial, sans-serif;
+    font-family:
+        Arial,
+        sans-serif;
     font-size: 13px;
     font-style: normal;
     font-weight: 700;
     line-height: 1;
     text-transform: lowercase;
+    user-select: none;
 }
 
 .pivot-help-content {
@@ -652,111 +780,166 @@
 }
 
 .pivot-help-text {
+    min-width: 0;
     margin: 0;
     color: #53647d;
     font-size: 11px;
     font-weight: 500;
-    line-height: 1.55;
+    line-height: 1.5;
     letter-spacing: 0.01em;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
 
 
-            .pivot-wireframe.compact
-            .pivot-workspace {
-                grid-template-columns:
-                    minmax(0, 1fr)
-                    240px;
-                gap: 11px;
-                padding: 11px;
-            }
+/* -------------------------------------------------------------------------- */
+/* Compact Layout                                                             */
+/* -------------------------------------------------------------------------- */
 
-            .pivot-wireframe.compact
-            .pivot-wells {
-                grid-template-columns:
-                    repeat(2, minmax(0, 1fr));
-            }
-
-            .pivot-wireframe.compact
-            .pivot-well:nth-child(2) {
-                border-right: 0;
-            }
-
-            .pivot-wireframe.compact
-            .pivot-well:nth-child(-n + 2) {
-                border-bottom: 1px solid #dfe5ed;
-            }
-
-            .pivot-wireframe.narrow
-            .pivot-workspace {
-                display: flex;
-                flex-direction: column;
-                overflow-y: auto;
-            }
-
-            .pivot-wireframe.narrow
-            .pivot-header-actions {
-                display: none;
-            }
-
-            .pivot-wireframe.narrow
-            .pivot-subtitle {
-                display: none;
-            }
-
-            .pivot-wireframe.narrow
-            .pivot-wells {
-                grid-template-columns: 1fr;
-            }
-
-            .pivot-wireframe.narrow
-            .pivot-well {
-                border-right: 0;
-                border-bottom: 1px solid #dfe5ed;
-            }
-
-            .pivot-wireframe.narrow
-            .pivot-fields-panel {
-                min-height: 400px;
-            }
-
-
-
-            .pivot-field-checkbox-input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
+.pivot-wireframe.compact
+.pivot-workspace {
+    grid-template-columns:
+        minmax(0, 1fr)
+        240px;
+    gap: 11px;
+    padding: 11px;
 }
 
-.pivot-fields-empty {
-    padding: 24px 12px;
-    color: #7b8798;
-    font-size: 12px;
-    line-height: 1.5;
-    text-align: center;
+.pivot-wireframe.compact
+.pivot-wells {
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+.pivot-wireframe.compact
+.pivot-well:nth-child(2) {
+    border-right: 0;
+}
+
+.pivot-wireframe.compact
+.pivot-well:nth-child(-n + 2) {
+    border-bottom: 1px solid #dfe5ed;
+}
+
+.pivot-wireframe.compact
+.pivot-fields-header {
+    padding-right: 13px;
+    padding-left: 13px;
 }
 
 
-
+.pivot-wireframe.compact
 .pivot-search {
-    width: calc(100% - 34px);
-    min-height: 40px;
-    margin: 0 17px 10px;
-    padding: 0 12px;
-    border: 1px solid #d6dde7;
-    border-radius: 7px;
-    background: #ffffff;
-    color: #344155;
-    font-family: inherit;
-    font-size: 12px;
-    outline: none;
+    width: calc(100% - 26px);
+    margin-right: 13px;
+    margin-left: 13px;
 }
 
-.pivot-search:focus {
-    border-color: #1769d8;
-    box-shadow: 0 0 0 2px rgba(23, 105, 216, 0.12);
+.pivot-wireframe.compact
+.pivot-field-list {
+    padding-right: 13px;
+    padding-left: 13px;
 }
+
+.pivot-wireframe.compact
+.pivot-field-item {
+    gap: 8px;
+    padding-right: 7px;
+    padding-left: 7px;
+}
+
+.pivot-wireframe.compact
+.pivot-field-type {
+    flex-basis: 36px;
+    width: 36px;
+    min-width: 36px;
+}
+
+.pivot-wireframe.compact
+.pivot-help {
+    padding-right: 13px;
+    padding-left: 13px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Narrow Layout                                                              */
+/* -------------------------------------------------------------------------- */
+
+.pivot-wireframe.narrow
+.pivot-workspace {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.pivot-wireframe.narrow
+.pivot-header-actions {
+    display: none;
+}
+
+.pivot-wireframe.narrow
+.pivot-subtitle {
+    display: none;
+}
+
+.pivot-wireframe.narrow
+.pivot-wells {
+    grid-template-columns: 1fr;
+}
+
+.pivot-wireframe.narrow
+.pivot-well {
+    border-right: 0;
+    border-bottom: 1px solid #dfe5ed;
+}
+
+.pivot-wireframe.narrow
+.pivot-fields-panel {
+    min-height: 400px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Very Small Fields Pane                                                     */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 280px) {
+    .pivot-fields-header {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .pivot-search {
+        width: calc(100% - 24px);
+        margin-right: 12px;
+        margin-left: 12px;
+    }
+
+    .pivot-field-list {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .pivot-field-item {
+        gap: 7px;
+        padding-right: 7px;
+        padding-left: 7px;
+    }
+
+    .pivot-field-type {
+        flex-basis: 36px;
+        width: 36px;
+        min-width: 36px;
+    }
+
+    .pivot-help {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+}
+
+    .pivot-help {
+        padding-right: 12px;
+        padding-left: 12px;
+    }

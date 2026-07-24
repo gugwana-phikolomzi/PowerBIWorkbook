@@ -8,11 +8,13 @@ export declare class Visual implements IVisual {
     private readonly root;
     private dataView?;
     private availableFields;
+    private draggedField?;
     constructor(options: VisualConstructorOptions);
     update(options: VisualUpdateOptions): void;
     private render;
     private renderWorkspace;
-    private handleFieldSelection;
+    private handleFieldDragStart;
+    private handleFieldDragEnd;
     private renderFieldWells;
     private renderWell;
     private renderPivotArea;

@@ -29,6 +29,7 @@ export class Visual implements IVisual {
 
     private dataView?: DataView;
     private availableFields: AnalyticsField[] = [];
+    private draggedField?: AnalyticsField;
 
     constructor(options: VisualConstructorOptions) {
         this.hostElement = options.element;
@@ -109,13 +110,22 @@ export class Visual implements IVisual {
             mainColumn,
             renderFieldsPanel({
                 fields: this.availableFields,
-                onFieldSelectionChange: (
+                onFieldDragStart: (
                     field,
-                    selected
+                    event
                 ) => {
-                    this.handleFieldSelection(
+                    this.handleFieldDragStart(
                         field,
-                        selected
+                        event
+                    );
+                },
+                onFieldDragEnd: (
+                    field,
+                    event
+                ) => {
+                    this.handleFieldDragEnd(
+                        field,
+                        event
                     );
                 },
             })
@@ -124,15 +134,32 @@ export class Visual implements IVisual {
         return workspace;
     }
 
-    private handleFieldSelection(
+    private handleFieldDragStart(
         field: AnalyticsField,
-        selected: boolean
+        event: DragEvent
     ): void {
-        field.selected = selected;
+        this.draggedField = field;
+
+        event.dataTransfer?.setData(
+            "application/x-pivot-field-id",
+            field.id
+        );
 
         console.log(
-            `${field.name} selected: ${selected}`
+            `Started dragging ${field.name}`
         );
+    }
+
+    private handleFieldDragEnd(
+        field: AnalyticsField,
+        event: DragEvent
+    ): void {
+        console.log(
+            `Finished dragging ${field.name}`,
+            event.dataTransfer?.dropEffect ?? "none"
+        );
+
+        this.draggedField = undefined;
     }
 
     private renderFieldWells(): HTMLElement {

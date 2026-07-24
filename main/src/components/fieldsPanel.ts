@@ -15,15 +15,23 @@ export interface AnalyticsField {
     name: string;
     type: FieldDataType;
     isMeasure: boolean;
-    selected: boolean;
 }
 
 export interface FieldsPanelOptions {
     fields: AnalyticsField[];
-    onFieldSelectionChange?: (
+    onFieldDragStart?: (
         field: AnalyticsField,
-        selected: boolean
+        event: DragEvent
     ) => void;
+    onFieldDragEnd?: (
+        field: AnalyticsField,
+        event: DragEvent
+    ) => void;
+}
+
+interface FieldsHelpElements {
+    container: HTMLElement;
+    text: HTMLElement;
 }
 
 export function buildFieldsFromMetadata(
@@ -40,7 +48,6 @@ export function buildFieldsFromMetadata(
             name: getFieldDisplayName(column),
             type: getFieldDataType(column),
             isMeasure: Boolean(column.isMeasure),
-            selected: false,
         }));
 }
 
@@ -52,18 +59,94 @@ export function renderFieldsPanel(
         "pivot-fields-panel"
     );
 
+    // ------------------------------------------------------------------
+    // Header
+    // ------------------------------------------------------------------
+
+    const header = createElement(
+        "div",
+        "pivot-fields-header"
+    );
+
     const title = createElement(
         "h2",
         "pivot-fields-title",
         "Fields"
     );
 
+    const fieldCount = createElement(
+        "span",
+        "pivot-fields-count"
+    );
+
+    header.append(
+        title,
+        fieldCount
+    );
+
+    // ------------------------------------------------------------------
+    // Search
+    // ------------------------------------------------------------------
+
     const searchInput = createSearchInput();
+
+    // ------------------------------------------------------------------
+    // Field List
+    // ------------------------------------------------------------------
 
     const fieldList = createElement(
         "div",
         "pivot-field-list"
     );
+
+    fieldList.setAttribute(
+        "role",
+        "list"
+    );
+
+    // ------------------------------------------------------------------
+    // Help
+    // ------------------------------------------------------------------
+
+    const help = renderHelp();
+
+    // ------------------------------------------------------------------
+    // Count and Help Text
+    // ------------------------------------------------------------------
+
+    const updatePanelStatus = (
+        visibleFieldCount = options.fields.length,
+        searchText = ""
+    ): void => {
+        const totalFieldCount =
+            options.fields.length;
+
+        const hasSearch =
+            searchText.trim().length > 0;
+
+        fieldCount.textContent = hasSearch
+            ? `${visibleFieldCount}/${totalFieldCount}`
+            : totalFieldCount.toString();
+
+        fieldCount.setAttribute(
+            "aria-label",
+            hasSearch
+                ? `${visibleFieldCount} of ${totalFieldCount} fields shown`
+                : `${totalFieldCount} ${
+                    totalFieldCount === 1
+                        ? "field"
+                        : "fields"
+                } loaded`
+        );
+
+        help.text.textContent = hasSearch
+            ? "Drag a field from the search results into Rows, Columns, Values or Filters."
+            : "Drag fields into Rows, Columns, Values or Filters to build your analysis.";
+    };
+
+    // ------------------------------------------------------------------
+    // Render Field List
+    // ------------------------------------------------------------------
 
     const renderFieldList = (
         searchText = ""
@@ -73,22 +156,35 @@ export function renderFieldsPanel(
         const normalizedSearch =
             searchText.trim().toLowerCase();
 
-        const visibleFields = options.fields.filter(
-            (field) =>
-                field.name
-                    .toLowerCase()
-                    .includes(normalizedSearch)
+        const visibleFields =
+            options.fields.filter(
+                (field) =>
+                    field.name
+                        .toLowerCase()
+                        .includes(normalizedSearch)
+            );
+
+        updatePanelStatus(
+            visibleFields.length,
+            searchText
         );
 
         if (visibleFields.length === 0) {
+            const emptyState = createElement(
+                "div",
+                "pivot-fields-empty",
+                options.fields.length === 0
+                    ? "Add fields to the visual's Fields data role."
+                    : "No matching fields found."
+            );
+
+            emptyState.setAttribute(
+                "role",
+                "status"
+            );
+
             fieldList.appendChild(
-                createElement(
-                    "div",
-                    "pivot-fields-empty",
-                    options.fields.length === 0
-                        ? "Add fields to the visual's Fields data role."
-                        : "No matching fields found."
-                )
+                emptyState
             );
 
             return;
@@ -98,26 +194,37 @@ export function renderFieldsPanel(
             fieldList.appendChild(
                 renderFieldItem(
                     field,
-                    options.onFieldSelectionChange
+                    options.onFieldDragStart,
+                    options.onFieldDragEnd
                 )
             );
         });
     };
 
+    // ------------------------------------------------------------------
+    // Search Events
+    // ------------------------------------------------------------------
+
     searchInput.addEventListener(
         "input",
         () => {
-            renderFieldList(searchInput.value);
+            renderFieldList(
+                searchInput.value
+            );
         }
     );
+
+    // ------------------------------------------------------------------
+    // Initial Render
+    // ------------------------------------------------------------------
 
     renderFieldList();
 
     panel.append(
-        title,
+        header,
         searchInput,
         fieldList,
-        renderHelp()
+        help.container
     );
 
     return panel;
@@ -125,39 +232,44 @@ export function renderFieldsPanel(
 
 function renderFieldItem(
     field: AnalyticsField,
-    onFieldSelectionChange?: (
+    onFieldDragStart?: (
         field: AnalyticsField,
-        selected: boolean
+        event: DragEvent
+    ) => void,
+    onFieldDragEnd?: (
+        field: AnalyticsField,
+        event: DragEvent
     ) => void
 ): HTMLElement {
-    const label = createElement(
-        "label",
+    const fieldItem = createElement(
+        "div",
         "pivot-field-item"
     );
 
-    const checkbox =
-        document.createElement("input");
+    fieldItem.setAttribute(
+        "role",
+        "listitem"
+    );
 
-    checkbox.type = "checkbox";
-    checkbox.className =
-        "pivot-field-checkbox-input";
+    fieldItem.setAttribute(
+        "tabindex",
+        "0"
+    );
 
-    checkbox.checked = field.selected;
-
-    checkbox.setAttribute(
+    fieldItem.setAttribute(
         "aria-label",
-        `Select ${field.name}`
+        `${field.name}, ${getFieldTypeDescription(field)}. Draggable field.`
     );
 
-    const checkboxDisplay = createElement(
-        "span",
-        field.selected
-            ? "pivot-checkbox selected"
-            : "pivot-checkbox"
-    );
+    fieldItem.draggable = true;
 
-    checkboxDisplay.textContent =
-        field.selected ? "✓" : "";
+    fieldItem.dataset.fieldId =
+        field.id;
+
+    fieldItem.dataset.fieldType =
+        field.isMeasure
+            ? "measure"
+            : field.type;
 
     const typeIcon = createElement(
         "span",
@@ -165,10 +277,18 @@ function renderFieldItem(
         getFieldTypeLabel(field)
     );
 
-typeIcon.dataset.fieldType =
-    field.isMeasure
-        ? "measure"
-        : field.type;
+    typeIcon.dataset.fieldType =
+        field.isMeasure
+            ? "measure"
+            : field.type;
+
+    typeIcon.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    typeIcon.title =
+        getFieldTypeDescription(field);
 
     const fieldName = createElement(
         "span",
@@ -176,34 +296,53 @@ typeIcon.dataset.fieldType =
         field.name
     );
 
-    checkbox.addEventListener(
-        "change",
-        () => {
-            field.selected = checkbox.checked;
+    fieldName.title =
+        field.name;
 
-            checkboxDisplay.classList.toggle(
-                "selected",
-                checkbox.checked
+    fieldItem.addEventListener(
+        "dragstart",
+        (event) => {
+            fieldItem.classList.add(
+                "dragging"
             );
 
-            checkboxDisplay.textContent =
-                checkbox.checked ? "✓" : "";
+            event.dataTransfer?.setData(
+                "text/plain",
+                field.id
+            );
 
-            onFieldSelectionChange?.(
+            if (event.dataTransfer) {
+                event.dataTransfer.effectAllowed =
+                    "move";
+            }
+
+            onFieldDragStart?.(
                 field,
-                checkbox.checked
+                event
             );
         }
     );
 
-    label.append(
-        checkbox,
-        checkboxDisplay,
+    fieldItem.addEventListener(
+        "dragend",
+        (event) => {
+            fieldItem.classList.remove(
+                "dragging"
+            );
+
+            onFieldDragEnd?.(
+                field,
+                event
+            );
+        }
+    );
+
+    fieldItem.append(
         typeIcon,
         fieldName
     );
 
-    return label;
+    return fieldItem;
 }
 
 function createSearchInput(): HTMLInputElement {
@@ -211,8 +350,14 @@ function createSearchInput(): HTMLInputElement {
         document.createElement("input");
 
     searchInput.type = "search";
-    searchInput.className = "pivot-search";
-    searchInput.placeholder = "Search fields";
+    searchInput.className =
+        "pivot-search";
+    searchInput.placeholder =
+        "Search fields";
+    searchInput.autocomplete =
+        "off";
+    searchInput.spellcheck =
+        false;
 
     searchInput.setAttribute(
         "aria-label",
@@ -222,26 +367,38 @@ function createSearchInput(): HTMLInputElement {
     return searchInput;
 }
 
-function renderHelp(): HTMLElement {
+function renderHelp(): FieldsHelpElements {
     const help = createElement(
         "div",
         "pivot-help"
     );
 
-    help.append(
-        createElement(
-            "span",
-            "pivot-help-icon",
-            "i"
-        ),
-        createElement(
-            "span",
-            "pivot-help-text",
-            "Select fields to Rows, Columns, Values or Filters to build your own analysis."
-        )
+    const helpIcon = createElement(
+        "span",
+        "pivot-help-icon",
+        "i"
     );
 
-    return help;
+    helpIcon.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    const helpText = createElement(
+        "span",
+        "pivot-help-text",
+        "Drag fields into Rows, Columns, Values or Filters to build your analysis."
+    );
+
+    help.append(
+        helpIcon,
+        helpText
+    );
+
+    return {
+        container: help,
+        text: helpText,
+    };
 }
 
 function getFieldDisplayName(
@@ -290,12 +447,12 @@ function getFieldTypeLabel(
     field: AnalyticsField
 ): string {
     if (field.isMeasure) {
-        return "Σ";
+        return "SUM";
     }
 
     switch (field.type) {
         case "date":
-            return "▣";
+            return "DATE";
 
         case "number":
             return "1.2";
@@ -304,11 +461,37 @@ function getFieldTypeLabel(
             return "T/F";
 
         case "geography":
-            return "◎";
+            return "GEO";
 
         case "text":
         default:
             return "ABC";
+    }
+}
+
+function getFieldTypeDescription(
+    field: AnalyticsField
+): string {
+    if (field.isMeasure) {
+        return "Measure";
+    }
+
+    switch (field.type) {
+        case "date":
+            return "Date field";
+
+        case "number":
+            return "Number field";
+
+        case "boolean":
+            return "Boolean field";
+
+        case "geography":
+            return "Geography field";
+
+        case "text":
+        default:
+            return "Text field";
     }
 }
 
@@ -323,11 +506,13 @@ function createElement<
         document.createElement(tagName);
 
     if (className) {
-        element.className = className;
+        element.className =
+            className;
     }
 
     if (text !== undefined) {
-        element.textContent = text;
+        element.textContent =
+            text;
     }
 
     return element;
