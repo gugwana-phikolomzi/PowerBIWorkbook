@@ -26,6 +26,5 @@ export declare class Visual implements IVisual {
     private getAvailableUnassignedFields;
     private clearDropZoneHighlights;
     private renderPivotArea;
-    private renderTableWireframe;
     private createElement;
 }

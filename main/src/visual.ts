@@ -3,6 +3,7 @@
 import "./components/style.less";
 
 import { renderHeader } from "./components/header";
+import { renderPivotTable } from "./components/pivotTable";
 
 import {
     AnalyticsField,
@@ -459,8 +460,12 @@ export class Visual implements IVisual {
             "pivot-table-wrapper"
         );
 
+
         tableWrapper.appendChild(
-            this.renderTableWireframe()
+            renderPivotTable({
+                dataView: this.dataView,
+                fieldWellsState: this.fieldWellsState,
+            })
         );
 
         const footer = this.createElement(
@@ -478,7 +483,7 @@ export class Visual implements IVisual {
             this.createElement(
                 "span",
                 "pivot-footer-text",
-                "Showing top 4 of 4 Product Category"
+                "Configure the field wells to build the table"
             )
         );
 
@@ -491,206 +496,7 @@ export class Visual implements IVisual {
         return card;
     }
 
-    private renderTableWireframe(): HTMLElement {
-        const table = this.createElement(
-            "div",
-            "pivot-table"
-        );
 
-        const topHeader = this.createElement(
-            "div",
-            "pivot-table-row pivot-top-header"
-        );
-
-        topHeader.append(
-            this.createElement(
-                "div",
-                "pivot-cell pivot-row-header tall",
-                "Sum of Sales Amount"
-            ),
-
-            this.createElement(
-                "div",
-                "pivot-cell pivot-column-header wide",
-                "Calendar Year"
-            )
-        );
-
-        const yearHeader = this.createElement(
-            "div",
-            "pivot-table-row pivot-year-header"
-        );
-
-        yearHeader.append(
-            this.createElement(
-                "div",
-                "pivot-cell pivot-row-header",
-                ""
-            ),
-
-            this.createElement(
-                "div",
-                "pivot-cell",
-                "2021"
-            ),
-
-            this.createElement(
-                "div",
-                "pivot-cell",
-                "2022"
-            ),
-
-            this.createElement(
-                "div",
-                "pivot-cell",
-                "2023"
-            ),
-
-            this.createElement(
-                "div",
-                "pivot-cell",
-                "2024"
-            ),
-
-            this.createElement(
-                "div",
-                "pivot-cell total-cell",
-                "Grand Total"
-            )
-        );
-
-        const categoryHeader =
-            this.createElement(
-                "div",
-                "pivot-table-row pivot-category-header"
-            );
-
-        categoryHeader.append(
-            this.createElement(
-                "div",
-                "pivot-cell pivot-row-header",
-                "Product Category"
-            ),
-
-            this.createElement(
-                "div",
-                "pivot-cell pivot-empty-span",
-                ""
-            )
-        );
-
-        table.append(
-            topHeader,
-            yearHeader,
-            categoryHeader
-        );
-
-        const rows: string[][] = [
-            [
-                "Bikes",
-                "$12.6M",
-                "$14.8M",
-                "$16.2M",
-                "$17.5M",
-                "$61.1M",
-            ],
-            [
-                "Components",
-                "$6.2M",
-                "$7.1M",
-                "$7.9M",
-                "$8.3M",
-                "$29.5M",
-            ],
-            [
-                "Accessories",
-                "$2.2M",
-                "$2.4M",
-                "$2.7M",
-                "$2.8M",
-                "$10.0M",
-            ],
-            [
-                "Clothing",
-                "$1.0M",
-                "$1.2M",
-                "$1.3M",
-                "$1.5M",
-                "$5.0M",
-            ],
-        ];
-
-        rows.forEach((row) => {
-            const rowElement =
-                this.createElement(
-                    "div",
-                    "pivot-table-row"
-                );
-
-            row.forEach(
-                (value, index) => {
-                    const className =
-                        index === 0
-                            ? "pivot-cell pivot-row-header"
-                            : index ===
-                                row.length - 1
-                              ? "pivot-cell numeric total-cell"
-                              : "pivot-cell numeric";
-
-                    const text =
-                        index === 0
-                            ? `›  ${value}`
-                            : value;
-
-                    rowElement.appendChild(
-                        this.createElement(
-                            "div",
-                            className,
-                            text
-                        )
-                    );
-                }
-            );
-
-            table.appendChild(
-                rowElement
-            );
-        });
-
-        const totalRow = this.createElement(
-            "div",
-            "pivot-table-row grand-total"
-        );
-
-        const totals = [
-            "Grand Total",
-            "$22.1M",
-            "$25.5M",
-            "$28.1M",
-            "$30.1M",
-            "$105.7M",
-        ];
-
-        totals.forEach(
-            (value, index) => {
-                totalRow.appendChild(
-                    this.createElement(
-                        "div",
-                        index === 0
-                            ? "pivot-cell pivot-row-header"
-                            : "pivot-cell numeric",
-                        value
-                    )
-                );
-            }
-        );
-
-        table.appendChild(
-            totalRow
-        );
-
-        return table;
-    }
 
     private createElement<
         K extends keyof HTMLElementTagNameMap
