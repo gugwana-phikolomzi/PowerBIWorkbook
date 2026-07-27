@@ -276,27 +276,29 @@
 /* Pivot Table                                                                */
 /* -------------------------------------------------------------------------- */
 .pivot-table-wrapper {
+  flex: 1;
   min-width: 0;
   min-height: 0;
-  flex: 1;
   padding: 13px;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+.pivot-table-container {
+  display: inline-block;
+  min-width: max-content;
 }
 .pivot-table {
-  min-width: 760px;
-  overflow: hidden;
+  display: inline-block;
+  min-width: max-content;
   border: 1px solid #dce2ea;
   border-radius: 7px;
+  background: #ffffff;
+  overflow: hidden;
 }
 .pivot-table-row {
   display: grid;
-  grid-template-columns: 210px repeat(5, minmax(110px, 1fr));
-}
-.pivot-top-header {
-  grid-template-columns: 210px minmax(550px, 5fr);
-}
-.pivot-category-header {
-  grid-template-columns: 210px minmax(550px, 5fr);
+  width: max-content;
+  min-width: 100%;
 }
 .pivot-cell {
   display: flex;
@@ -307,6 +309,10 @@
   border-bottom: 1px solid #e1e6ed;
   background: #ffffff;
   font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
 }
 .pivot-cell:last-child {
   border-right: 0;
@@ -314,17 +320,20 @@
 .pivot-table-row:last-child .pivot-cell {
   border-bottom: 0;
 }
-.pivot-top-header .pivot-cell,
-.pivot-year-header .pivot-cell,
-.pivot-category-header .pivot-cell {
+.pivot-header-cell {
   background: #fafbfd;
   font-weight: 600;
 }
 .pivot-column-header {
   justify-content: flex-start;
+  background: #fafbfd;
+  font-weight: 600;
 }
 .pivot-row-header {
   font-weight: 600;
+}
+.pivot-data-cell {
+  justify-content: flex-end;
 }
 .numeric {
   justify-content: flex-end;
@@ -337,6 +346,59 @@
 .grand-total .pivot-cell {
   background: #f6f8fb;
   font-weight: 700;
+}
+.pivot-corner-cell {
+  background: #fafbfd;
+}
+.pivot-table-limit-message {
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 11px;
+}
+.pivot-table-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.pivot-table-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.pivot-table-filter-label {
+  font-weight: 600;
+}
+.pivot-table-filter-select {
+  min-width: 140px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid #cfd8e3;
+  border-radius: 4px;
+  background: #ffffff;
+  font-size: 12px;
+}
+.pivot-table-empty {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid #dce2ea;
+  border-radius: 7px;
+  background: #ffffff;
+}
+.pivot-table-empty-icon {
+  font-size: 18px;
+}
+.pivot-table-empty-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.pivot-table-empty-description {
+  font-size: 12px;
+  color: #6b7280;
 }
 /* -------------------------------------------------------------------------- */
 /* Results Footer                                                             */
