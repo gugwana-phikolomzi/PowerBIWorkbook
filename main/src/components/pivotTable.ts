@@ -8,6 +8,9 @@ import {
 
 import {
     buildPivotModel,
+    DEFAULT_COLUMN_KEY,
+    getPivotCell,
+    PivotCell,
     PivotFilter,
     PivotHeader,
     PivotModel,
@@ -176,8 +179,8 @@ function renderTable(
             (rowHeader) => {
                 table.appendChild(
                     renderRowsOnlyDataRow(
-                        rowHeader,
-                        model.rowFields.length
+                        model,
+                        rowHeader
                     )
                 );
             }
@@ -201,8 +204,8 @@ function renderTable(
         (rowHeader) => {
             table.appendChild(
                 renderPivotDataRow(
+                    model,
                     rowHeader,
-                    model.rowFields.length,
                     visibleColumns
                 )
             );
@@ -220,9 +223,20 @@ function renderRowsOnlyHeader(
         "pivot-table-row pivot-table-header-row"
     );
 
+    const hasValueField =
+        model.valueFields.length === 1;
+
+    const totalColumnCount =
+        model.rowFields.length +
+        (
+            hasValueField
+                ? 1
+                : 0
+        );
+
     applyGridColumns(
         header,
-        model.rowFields.length
+        totalColumnCount
     );
 
     model.rowFields.forEach(
@@ -237,21 +251,42 @@ function renderRowsOnlyHeader(
         }
     );
 
+    if (hasValueField) {
+        header.appendChild(
+            createElement(
+                "div",
+                "pivot-cell pivot-column-header pivot-header-cell numeric",
+                model.valueFields[0].field.name
+            )
+        );
+    }
+
     return header;
 }
 
 function renderRowsOnlyDataRow(
-    rowHeader: PivotHeader,
-    rowFieldCount: number
+    model: PivotModel,
+    rowHeader: PivotHeader
 ): HTMLElement {
     const row = createElement(
         "div",
         "pivot-table-row"
     );
 
+    const hasValueField =
+        model.valueFields.length === 1;
+
+    const totalColumnCount =
+        model.rowFields.length +
+        (
+            hasValueField
+                ? 1
+                : 0
+        );
+
     applyGridColumns(
         row,
-        rowFieldCount
+        totalColumnCount
     );
 
     rowHeader.values.forEach(
@@ -265,6 +300,19 @@ function renderRowsOnlyDataRow(
             );
         }
     );
+
+    if (hasValueField) {
+        const cell =
+            getPivotCell(
+                model,
+                rowHeader.key,
+                DEFAULT_COLUMN_KEY
+            );
+
+        row.appendChild(
+            renderValueCell(cell)
+        );
+    }
 
     return row;
 }
@@ -380,8 +428,8 @@ function renderColumnHeaderLevel(
 }
 
 function renderPivotDataRow(
+    model: PivotModel,
     rowHeader: PivotHeader,
-    rowFieldCount: number,
     columnHeaders: PivotHeader[]
 ): HTMLElement {
     const row = createElement(
@@ -391,7 +439,7 @@ function renderPivotDataRow(
 
     applyPivotGridColumns(
         row,
-        rowFieldCount,
+        model.rowFields.length,
         columnHeaders.length
     );
 
@@ -408,18 +456,64 @@ function renderPivotDataRow(
     );
 
     columnHeaders.forEach(
-        () => {
+        (columnHeader) => {
+            if (
+                model.valueFields.length === 0
+            ) {
+                row.appendChild(
+                    createElement(
+                        "div",
+                        "pivot-cell pivot-data-cell",
+                        ""
+                    )
+                );
+
+                return;
+            }
+
+            const cell =
+                getPivotCell(
+                    model,
+                    rowHeader.key,
+                    columnHeader.key
+                );
+
             row.appendChild(
-                createElement(
-                    "div",
-                    "pivot-cell pivot-data-cell",
-                    ""
-                )
+                renderValueCell(cell)
             );
         }
     );
 
     return row;
+}
+
+function renderValueCell(
+    cell: PivotCell | undefined
+): HTMLElement {
+    return createElement(
+        "div",
+        "pivot-cell pivot-data-cell numeric",
+        formatPivotCell(cell)
+    );
+}
+
+function formatPivotCell(
+    cell: PivotCell | undefined
+): string {
+    if (
+        !cell ||
+        cell.sourceCount === 0
+    ) {
+        return "";
+    }
+
+    return cell.value.toLocaleString(
+        "en-US",
+        {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+        }
+    );
 }
 
 function createColumnHeaderGroups(
